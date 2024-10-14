@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.li.dao.UserOrderMapper">
+  <resultMap id="orderMap" type="com.li.pojo.UserOrder">
+      <id property="orderid" column="orderid"/>
+      <result property="user_id" column="user_id"/>
+      <result property="goodsid" column="goodsid"/>
+      <result property="groupbuyid" column="groupbuyid"/>
+      <result property="orderstatus" column="orderstatus"/>
+      <result property="ordertime" column="ordertime"/>
+      <result property="quantity" column="quantity"/>
+      <result property="totalprice" column="totalprice"/>
+      <association property="user" javaType="com.li.pojo.User">
+          <id column="user_id" property="user_id"/>
+          <result column="user_name" property="user_name"/>
+          <result column="user_password" property="user_password"/>
+          <result column="user_phone" property="user_phone"/>
+          <result column="user_address" property="user_address"/>
+      </association>
+      <association property="goods" javaType="com.li.pojo.Goods">
+          <id property="goodsid" column="goodsid"/>
+          <result property="goodsname" column="goodsname"/>
+          <result property="goodscategory" column="goodscategory"/>
+          <result property="price" column="price"/>
+          <result property="goods_gbpeople_number" column="goods_gbpeople_number"/>
+          <result property="goods_extra_info" column="goods_extra_info"/>
+          <result property="goodsdiscount" column="goodsdiscount"/>
+          <result property="cangroupbuy" column="cangroupbuy"/>
+      </association>
+      <association property="groupBuy" javaType="com.li.pojo.GroupBuy">
+          <id property="groupbuyid" column="groupbuyid"/>
+          <result property="people_acquired" column="people_acquired"/>
+          <result column="groupbuystatus" property="groupbuystatus"/>
+          <result property="goodsid" column="goodsid"/>
+      </association>
+  </resultMap>
+
+
+     <!--获取所有订单-->
+    <select id="getOrderByPage" resultMap="orderMap" parameterType="int">
+        select * from userorder uo,user u,goods g,groupbuy gb
+        where uo.user_id=u.user_id and uo.goodsid=g.goodsid and
+              uo.groupbuyid=gb.groupbuyid limit #{startIndex},#{pageSize};
+    </select>
+    <!-- 获取个人订单 -->
+    <select id="getUserOrder" resultMap="orderMap" parameterType="int">
+        select * from userorder uo,user u,goods g,groupbuy gb
+        where uo.user_id=u.user_id and uo.goodsid=g.goodsid and
+              uo.groupbuyid=gb.groupbuyid and u.user_id=#{user_id};
+    </select>
+
+    <!--获取总订单数-->
+    <select id="getOrderCount" resultType="int">
+        select count(*) from userorder;
+    </select>
+
+    <!--删除订单-->
+   <delete id="delOrderById" parameterType="int">
+       delete from userorder where orderid=#{orderid};
+   </delete>
+
+    <!--更改订单状态-->
+    <update id="modifyOrder">
+        update userorder,groupbuy set groupbuystatus=#{groupbuystatus}
+                           where orderid=#{orderid}
+                             and userorder.groupbuyid=groupbuy.groupbuyid;
+    </update>
+
+
+
+
+    <insert id="InsertIntoTable" parameterType="com.li.pojo.UserOrder">
+        insert into userorder(user_id, goodsid, groupbuyid,
+                              orderstatus, quantity, totalprice, ordertime)
+        value (#{user_id},
+               #{goodsid},
+               #{groupbuyid},
+               #{orderstatus},
+               #{quantity},
+               #{toatalprice},
+               #{ordertime});
+    </insert>
+
+</mapper>

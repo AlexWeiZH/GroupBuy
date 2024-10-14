@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.li.dao.BonusMapper">
+<insert id="InsertBonus" parameterType="com.li.pojo.Bonus">
+    insert into bonus(goodsname,totalprice,time,bonus,user_id)
+    value (#{goodsname},
+           #{totalprice},
+           #{time},
+           #{bonus},
+           #{user_id});
+</insert>
+
+<select id="getAllBonusByPage" resultType="com.li.pojo.Bonus" parameterType="int">
+    select * from bonus where user_id=#{user_id} limit #{startIndex},#{pageSize} ;
+</select>
+
+    <select id="getBonusSum" resultType="int">
+        select sum(bonus) from bonus where user_id=#{user_id};
+    </select>
+
+    <select id="getBonusCount" resultType="int">
+        select  count(*) from  bonus where user_id=#{user_id};
+    </select>
+</mapper>

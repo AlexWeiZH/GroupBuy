@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.li.dao.GoodsMapper">
+
+    <!--添加商品-->
+  <insert id="addGoods" parameterType="com.li.pojo.Goods">
+    insert into goods(goodsname, goodscategory, price,
+                      goods_gbpeople_number, goods_extra_info, goodsdiscount, cangroupbuy)
+    value (#{goods.goodsname},
+           #{goods.goodscategory},
+           #{goods.price},
+           #{goods.goods_gbpeople_number},
+           #{goods.goods_extra_info},
+           #{goods.goodsdiscount},
+           #{goods.cangroupbuy});
+  </insert>
+
+   <!--按页查找商品-->
+  <select id="getGoodsByPage" resultType="com.li.pojo.Goods" parameterType="int">
+    select * from goods
+    <if test="category!=null and category!=''">
+     where goodscategory=#{category}
+    </if>
+    limit #{startIndex},#{pageSize} ;
+  </select>
+
+  <!--获取商品总数目-->
+   <select id="getGoodsCount" resultType="int">
+     select count(*) from goods
+       <if test="category!=null and category!=''">
+           where goodscategory=#{category}
+       </if>
+     ;
+   </select>
+
+  <!--根据商品id删除商品-->
+  <delete id="delGoodsById" parameterType="int">
+    delete from goods where goodsid=#{goodsid}
+  </delete>
+
+  <!--修改商品信息-->
+  <update id="modifyGoods" parameterType="com.li.pojo.Goods">
+    update goods set goodsname=#{goods.goodsname},
+                     goodscategory=#{goods.goodscategory},
+                     goods_gbpeople_number=#{goods.goods_gbpeople_number},
+                     goods_extra_info=#{goods.goods_extra_info},
+                     price=#{goods.price},
+                     goodsdiscount=#{goods.goodsdiscount},
+                     cangroupbuy=#{goods.cangroupbuy}
+              where goodsid=#{goods.goodsid};
+  </update>
+
+  <!--根据id查找商品-->
+  <select id="getGoodsById" resultType="com.li.pojo.Goods" parameterType="int">
+    select * from goods where goodsid=#{goodsid};
+  </select>
+
+
+
+
+
+
+    <select id="getGoodById" resultType="com.li.pojo.Goods" parameterType="Integer">
+        select * from goods where goodsid=#{goodsid};
+    </select>
+
+
+</mapper>
